@@ -18,14 +18,33 @@ const map = L.map('map', {
 
 // Initialize map with image overlay
 const imageBounds = [[0, 0], MAP_IMAGE_SIZE];
-L.imageOverlay('/static/images/fontainmap.jpeg', imageBounds).addTo(map);
+
+L.imageOverlay('/static/images/fontaine.jpeg', imageBounds).addTo(map);
+
 map.fitBounds(imageBounds);
+
 L.control.zoom({ position: 'topright' }).addTo(map);
 
 const targetImageElement = document.getElementById('target-image');
 const submitButton = document.getElementById('submit-btn');
 const timerElement = document.getElementById('timer');
 const resultElement = document.getElementById('result');
+const selectElement = document.getElementById('region-selector');
+
+selectElement.addEventListener('change',
+  function() {
+    const selectedValue = this.value;
+    let filename = `${selectedValue}.png`;
+
+    if (window.currentOverlay) {
+        map.removeLayer(window.currentOverlay);
+    }
+
+     L.imageOverlay(`/static/images/maps/${filename}`, imageBounds).addTo(map);
+  }
+);
+  
+    
 
 async function fetchTask() {
   try {
