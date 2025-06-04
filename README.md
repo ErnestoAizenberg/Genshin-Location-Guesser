@@ -1,23 +1,8 @@
-<a href="#">
-  <svg viewBox="0 0 400 60">
-    <defs>
-      <linearGradient id="rainbow" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:#E34F26;stop-opacity:1" />
-        <stop offset="50%" style="stop-color:#1572B6;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#F7DF1E;stop-opacity:1" />
-      </linearGradient>
-      <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur stdDeviation="5" result="blur" />
-        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-      </filter>
-    </defs>
-    <rect x="0" y="0" rx="5" ry="5" width="400" height="60" fill="url(#rainbow)" filter="url(#glow)" />
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="white">WEB SORCERER</text>
-    <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite" />
-  </svg>
-</a>
+[![WEB TRINITY](https://img.shields.io/badge/-WEB%20TRINITY-111111?style=for-the-badge&logo=html5&logoColor=E34F26&labelColor=000000&color=111111&animation=glow&link=https://developer.mozilla.org)](https://developer.mozilla.org)
 
+[![JavaScript Enchantment](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black&labelColor=101010&color=F7DF1E&animation=glow&link=https://en.wikipedia.org/wiki/JavaScript)](https://en.wikipedia.org/wiki/JavaScript)
 
+[![CSS3 Wizardry](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white&labelColor=101010&color=1572B6&animation=glow&link=https://en.wikipedia.org/wiki/CSS)](https://en.wikipedia.org/wiki/CSS)
 ![Python](https://img.shields.io/badge/Python-3.7-ff69b4) ![Flask](https://img.shields.io/badge/Flask-2.2.5-ff9e00)
 
 
