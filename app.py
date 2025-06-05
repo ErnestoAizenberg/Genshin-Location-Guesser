@@ -56,7 +56,7 @@ def create_app(app_config=None):
     @app.route("/home")
     @app.route("/")
     def index():
-        return render_template("index.html")
+        return render_template("index2.html")
 
     @app.route("/get_task")
     def get_task():

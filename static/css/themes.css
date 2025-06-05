@@ -1,0 +1,163 @@
+/* Базовые стили (дефолтная тема - Мондштадт) */
+body {
+    --primary-bg: #e8f4fc;
+    --secondary-bg: #c2e0f7;
+    --accent-color: #6ba1c9;
+    --text-primary: #2c3e50;
+    --text-secondary: #4a6b8a;
+    --button-bg: #5d8cb3;
+    --button-hover: #4a7a9e;
+    --border-color: #a8c6e0;
+    --shadow-color: rgba(93, 140, 179, 0.3);
+    --map-tile-filter: none;
+    background-image: linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg));
+    transition: all 0.5s ease;
+}
+
+#game-container {
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 0 20px var(--shadow-color);
+}
+
+#header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+select, button {
+    background-color: var(--button-bg);
+    color: white;
+    border: 1px solid var(--border-color);
+}
+
+select:hover, button:hover {
+    background-color: var(--button-hover);
+}
+
+/* Тема Ли Юэ */
+body.liyue-theme {
+    --primary-bg: #fdf6e3;
+    --secondary-bg: #f0e0b6;
+    --accent-color: #d4a35e;
+    --text-primary: #5a4a3a;
+    --text-secondary: #8a7a6a;
+    --button-bg: #b87333;
+    --button-hover: #a05a20;
+    --border-color: #e0c090;
+    --shadow-color: rgba(184, 115, 51, 0.3);
+    --map-tile-filter: sepia(0.2) hue-rotate(-10deg);
+    background-image: 
+        linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg)),
+        url('textures/liyue-pattern.png');
+}
+
+.liyue-theme #game-container {
+    background-color: rgba(253, 246, 227, 0.9);
+}
+
+/* Тема Инадзумы */
+body.inazuma-theme {
+    --primary-bg: #f0e8ff;
+    --secondary-bg: #d8c0f0;
+    --accent-color: #9a6fd1;
+    --text-primary: #3a2a5a;
+    --text-secondary: #6a5a8a;
+    --button-bg: #7a4db3;
+    --button-hover: #693a9e;
+    --border-color: #c0a0e0;
+    --shadow-color: rgba(122, 77, 179, 0.3);
+    --map-tile-filter: hue-rotate(30deg) contrast(1.1);
+    background-image: 
+        linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg)),
+        url('textures/inazuma-sakura.png');
+}
+
+.inazuma-theme #game-container {
+    background-color: rgba(240, 232, 255, 0.9);
+}
+
+/* Тема Сумеру */
+body.sumeru-theme {
+    --primary-bg: #f0f8e8;
+    --secondary-bg: #c8e0b0;
+    --accent-color: #7a9a5a;
+    --text-primary: #3a4a2a;
+    --text-secondary: #5a7a4a;
+    --button-bg: #6a8c4a;
+    --button-hover: #5a7a3a;
+    --border-color: #a8c690;
+    --shadow-color: rgba(106, 140, 74, 0.3);
+    --map-tile-filter: hue-rotate(-20deg) saturate(1.2);
+    background-image: 
+        linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg)),
+        url('textures/sumeru-pattern.png');
+}
+
+.sumeru-theme #game-container {
+    background-color: rgba(240, 248, 232, 0.9);
+}
+
+/* Тема Фонтейна */
+body.fontaine-theme {
+    --primary-bg: #e8f8ff;
+    --secondary-bg: #c0e0f0;
+    --accent-color: #5aa5c9;
+    --text-primary: #2a4a5a;
+    --text-secondary: #4a8a9a;
+    --button-bg: #4a8ca9;
+    --button-hover: #3a7a90;
+    --border-color: #90c0d0;
+    --shadow-color: rgba(74, 140, 169, 0.3);
+    --map-tile-filter: hue-rotate(-5deg) brightness(1.05);
+    background-image: 
+        linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg)),
+        url('textures/fontaine-water.png');
+}
+
+.fontaine-theme #game-container {
+    background-color: rgba(232, 248, 255, 0.9);
+}
+
+/* Тема Натлан (предположительная) */
+body.natlan-theme {
+    --primary-bg: #fff0e0;
+    --secondary-bg: #f0c0a0;
+    --accent-color: #d46a3a;
+    --text-primary: #5a2a1a;
+    --text-secondary: #8a4a3a;
+    --button-bg: #c05a2a;
+    --button-hover: #a04a20;
+    --border-color: #e09060;
+    --shadow-color: rgba(192, 90, 42, 0.3);
+    --map-tile-filter: sepia(0.3) hue-rotate(10deg) contrast(1.1);
+    background-image: 
+        linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg)),
+        url('textures/natlan-lava.png');
+}
+
+.natlan-theme #game-container {
+    background-color: rgba(255, 240, 224, 0.9);
+}
+
+/* Общие стили для всех элементов */
+#target-image-container {
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 15px var(--shadow-color);
+}
+
+#timer {
+    color: var(--text-primary);
+}
+
+#result {
+    color: var(--text-secondary);
+}
+
+#map {
+    filter: var(--map-tile-filter);
+}
+
+/* Анимации для плавного перехода */
+#game-container, select, button, #target-image-container {
+    transition: all 0.5s ease;
+}

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genshin GeoGuessr Fontain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="Genshin Impact, Map, Guesser, Guess Image">
+    <meta name="description" content="Guess a location from Genshin Impact by it's image">
+    <meta name="author" content="Ernesto Seredinskiy">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://genshin-guesser.pythonanywhere.com/">
+    <meta property="og:title" content="Locatoon Guesser | Gebshin Impact">
+    <meta property="og:description" content="Guess a location from Genshin Impact by it's image">
+    <meta property="og:image" content="https://genshin-guesser.pythonanywhere.com/images/preview.jpg">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --mondstadt-color: #5e9bbf;
+            --liyue-color: #d4a017;
+            --inazuma-color: #a855f7;
+            --sumeru-color: #22c55e;
+            --fontaine-color: #3b82f6;
+            --natlan-color: #ef4444;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        body {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow: auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        /* Wind effect for Mondstadt */
+        .mondstadt-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/JQJQJQJ.png') repeat;
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+            animation: wind 20s linear infinite;
+        }
+
+        @keyframes wind {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Fire effect for Natlan */
+        .fire-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(239,68,68,0.1) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+            animation: fire 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes fire {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+
+        /* Water effect for Fontaine */
+        .water-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/WX9X9X9.png') repeat;
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+            animation: water 15s linear infinite;
+        }
+
+        @keyframes water {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 500px; }
+        }
+
+        /* Electro effect for Inazuma */
+        .electro-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(168,85,247,0.05) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(168,85,247,0.05) 100%);
+            z-index: -1;
+            pointer-events: none;
+            animation: electro 5s ease-in-out infinite;
+        }
+
+        @keyframes electro {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Dendro effect for Sumeru */
+        .dendro-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/ZXZXZXZ.png') repeat;
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+            animation: leaves 30s linear infinite;
+        }
+
+        @keyframes leaves {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 1000px; }
+        }
+
+        /* Geo effect for Liyue */
+        .geo-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(212,160,23,0.05) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+            animation: geo-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes geo-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.02); opacity: 0.3; }
+        }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #header {
+            padding: 15px;
+            text-align: center;
+            flex-shrink: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.5), rgba(0,0,0,0.7));
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+        }
+
+        #timer {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        #content {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            flex-direction: row;
+        }
+
+        @media (max-width: 768px) {
+            #content {
+                flex-direction: column;
+            }
+
+            #target-image-container {
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+
+        #target-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            flex-shrink: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: auto;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        #target-image {
+            max-width: 100%;
+            max-height: 140px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #target-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .right-side-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #region-selector {
+            padding: 10px 15px;
+            margin: 15px auto;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: calc(100% - 30px);
+            max-width: 300px;
+            align-self: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 15px;
+        }
+
+        #region-selector:hover {
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        #region-selector:focus {
+            outline: none;
+            border-color: currentColor;
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        #map-container {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        #controls {
+            padding: 15px;
+            text-align: center;
+            flex-shrink: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.5), rgba(0,0,0,0.7));
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        #controls::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+        }
+
+        #submit-btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(145deg, #27ae60, #2ecc71);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #submit-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        #submit-btn:disabled {
+            background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+            word-wrap: break-word;
+            color: white;
+            text-shadow: 0 0 5px currentColor;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .guess-marker {
+            background: red;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        }
+
+        /* Region-specific styles */
+        body.mondstadt {
+            background-image: linear-gradient(to bottom, #1e3a5f, #5e9bbf);
+            color: #e0f7fa;
+        }
+
+        body.liyue {
+            background-image: linear-gradient(to bottom, #3d2b1f, #d4a017);
+            color: #fff3e0;
+        }
+
+        body.inazuma {
+            background-image: linear-gradient(to bottom, #2e1065, #a855f7);
+            color: #f3e8ff;
+        }
+
+        body.sumeru {
+            background-image: linear-gradient(to bottom, #052e16, #22c55e);
+            color: #ecfdf5;
+        }
+
+        body.fontaine {
+            background-image: linear-gradient(to bottom, #172554, #3b82f6);
+            color: #eff6ff;
+        }
+
+        body.natlan {
+            background-image: linear-gradient(to bottom, #450a0a, #ef4444);
+            color: #fef2f2;
+        }
+
+        /* Animated floating elements */
+        .floating-element {
+            position: fixed;
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        /* Add some floating elements for each region */
+        .mondstadt .floating-element {
+            background: url('https://i.imgur.com/Anemo.png') no-repeat;
+            background-size: contain;
+        }
+
+        .liyue .floating-element {
+            background: url('https://i.imgur.com/Geo.png') no-repeat;
+            background-size: contain;
+        }
+
+        .inazuma .floating-element {
+            background: url('https://i.imgur.com/Electro.png') no-repeat;
+            background-size: contain;
+        }
+
+        .sumeru .floating-element {
+            background: url('https://i.imgur.com/Dendro.png') no-repeat;
+            background-size: contain;
+        }
+
+        .fontaine .floating-element {
+            background: url('https://i.imgur.com/Hydro.png') no-repeat;
+            background-size: contain;
+        }
+
+        .natlan .floating-element {
+            background: url('https://i.imgur.com/Pyro.png') no-repeat;
+            background-size: contain;
+        }
+
+        /* Add some region-specific decorative elements */
+        .region-decoration {
+            position: fixed;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            #timer {
+                font-size: 1.2em;
+            }
+            
+            #submit-btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            
+            #region-selector {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body class="mondstadt">
+    <!-- Region effects will be added here by JavaScript -->
+    <div id="mondstadt-effect" class="mondstadt-effect"></div>
+    <div id="liyue-effect" class="geo-effect"></div>
+    <div id="inazuma-effect" class="electro-effect"></div>
+    <div id="sumeru-effect" class="dendro-effect"></div>
+    <div id="fontaine-effect" class="water-effect"></div>
+    <div id="natlan-effect" class="fire-effect"></div>
+
+    <!-- Floating elements for decoration -->
+    <div class="floating-element" style="top: 10%; left: 5%; width: 50px; height: 50px; animation-delay: 0s;"></div>
+    <div class="floating-element" style="top: 30%; left: 80%; width: 40px; height: 40px; animation-delay: 3s;"></div>
+    <div class="floating-element" style="top: 70%; left: 15%; width: 60px; height: 60px; animation-delay: 6s;"></div>
+    <div class="floating-element" style="top: 20%; left: 60%; width: 30px; height: 30px; animation-delay: 9s;"></div>
+    <div class="floating-element" style="top: 80%; left: 70%; width: 45px; height: 45px; animation-delay: 12s;"></div>
+
+    <div id="game-container">
+        <div id="header">
+            <div id="timer">Time: 0s</div>
+        </div>
+
+        <div id="content">
+            <div id="target-image-container">
+                <img id="target-image" src="target-place.jpg" alt="Location to find">
+            </div>
+
+            <div class="right-side-container">
+                <select id="region-selector">
+                    <option selected value="mondstadt">Мондштадт</option>
+                    <option value="liyue">Ли Юэ</option>
+                    <option value="inazuma">Инадзума</option>
+                    <option value="sumeru">Сумеру</option>
+                    <option value="fontaine">Фонтейн</option>
+                    <option value="natlan">Натлан</option>
+                </select>
+
+                <div id="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="controls">
+            <button id="submit-btn" disabled>Submit Guess</button>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Theme switching functionality
+        document.getElementById('region-selector').addEventListener('change', function() {
+            const region = this.value;
+            document.body.className = region;
+            
+            // Hide all effects first
+            document.querySelectorAll('[id$="-effect"]').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show the current region's effect
+            document.getElementById(`${region}-effect`).style.display = 'block';
+        });
+
+        // Initialize with Mondstadt theme
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('mondstadt-effect').style.display = 'block';
+        });
+
+        // Game script would go here
+        // const gameScript = document.createElement('script');
+        // gameScript.src = 'static/js/game_script.js';
+        // document.body.appendChild(gameScript);
+        
+        // Theme script would go here
+        // const themeScript = document.createElement('script');
+        // themeScript.src = 'static/js/theme.js';
+        // document.body.appendChild(themeScript);
+    </script>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>                   <script src="static/js/game_script.js"></script>
+    <!-- <script src="static/js/theme.js"></script> -->
+</body>
+</html>
