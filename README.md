@@ -6,8 +6,7 @@
 ![1000016804]( | width=100)
 
 <img src="https://github.com/user-attachments/assets/2e268c45-a10e-42e2-8380-9908e2fd3792" height="450" width="400">
-
-<img src="https://github.com/user-attachments/assets/44abc038-dd71-4f4d-9e46-758aa591d572" alt="New dynamic themes" height="300">
+<img src="https://github.com/user-attachments/assets/44abc038-dd71-4f4d-9e46-758aa591d572" alt="New dynamic themes" width="300">
 
 
 # Genshin-Location-Guesser
