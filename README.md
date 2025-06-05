@@ -3,8 +3,8 @@
 ![Flask](https://img.shields.io/badge/Flask-2.2.5-ff9e00)
 
 # New: Dinamyc themed UI added
-![1000016804](https://github.com/user-attachments/assets/2e268c45-a10e-42e2-8380-9908e2fd3792)
-![1000016793](https://github.com/user-attachments/assets/44abc038-dd71-4f4d-9e46-758aa591d572)
+![1000016804](https://github.com/user-attachments/assets/2e268c45-a10e-42e2-8380-9908e2fd3792 | width=100)
+![1000016793](https://github.com/user-attachments/assets/44abc038-dd71-4f4d-9e46-758aa591d572 | width=100)
 
 # Genshin-Location-Guesser
 A web-based game where players guess locations from the world of *Genshin Impact* using an interactive map. Built with:  
