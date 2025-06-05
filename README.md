@@ -4,7 +4,6 @@
 
 # New: Dinamyc themed UI added
 ![1000016804](https://github.com/user-attachments/assets/2e268c45-a10e-42e2-8380-9908e2fd3792)
-![Alt text](https://github.com/user-attachments/assets/2e268c45-a10e-42e2-8380-9908e2fd3792){: width="300px" }
 
 # Genshin-Location-Guesser
 A web-based game where players guess locations from the world of *Genshin Impact* using an interactive map. Built with:  
