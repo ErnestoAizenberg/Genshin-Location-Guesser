@@ -2,6 +2,11 @@
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=FFD43B&labelColor=3776AB&color=FFD43B) 
 ![Flask](https://img.shields.io/badge/Flask-2.2.5-ff9e00)
 
+# New: Updated themed UI
+![1000016795](https://github.com/user-attachments/assets/a971b5b0-392b-4405-9cd6-997012b2dc4f)
+![1000016794](https://github.com/user-attachments/assets/16b8e0ef-2c44-4eeb-8284-4507c9fe81c1)
+![1000016804](https://github.com/user-attachments/assets/2e268c45-a10e-42e2-8380-9908e2fd3792)
+
 
 # Genshin-Location-Guesser
 A web-based game where players guess locations from the world of *Genshin Impact* using an interactive map. Built with:  
