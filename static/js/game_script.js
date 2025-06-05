@@ -6,9 +6,47 @@ let gameState = {
   timerInterval: null,
   currentGuess: null,
   isSubmitted: false,
-  currentTask: null
+  currentTask: null,
+  currentRegion: 'mondstadt'
 };
 
+// Define regions with their image URLs and sizes
+const regions = {
+  mondstadt: {
+    imageUrl: '/static/images/maps/mondstadt.png',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  },
+  liyue: {
+    imageUrl: '/static/images/maps/liyue_map.jpeg',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  },
+  inazuma: {
+    imageUrl: '/static/images/maps/inazuma_map.jpeg',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  },
+  sumeru: {
+    imageUrl: '/static/images/maps/sumeru_map.jpeg',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  },
+  fontaine: {
+	  imageUrl: '/static/images/maps/fontaine.jpeg',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  },
+  natlan: {
+    imageUrl: '/static/images/maps/natlan_map.jpeg',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  },
+  snezhnaya: {
+    imageUrl: '/static/images/maps/snezhnaya_map.jpeg',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  },
+  khaenriah: {
+    imageUrl: '/static/images/maps/khaenriah_map.jpeg',
+    bounds: [[0, 0], MAP_IMAGE_SIZE]
+  }
+};
+
+// Initialize the map
 const map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: -1,
@@ -16,42 +54,76 @@ const map = L.map('map', {
   zoomControl: false
 });
 
-// Initialize map with image overlay
-const imageBounds = [[0, 0], MAP_IMAGE_SIZE];
-
-L.imageOverlay('/static/images/fontaine.jpeg', imageBounds).addTo(map);
-
-map.fitBounds(imageBounds);
-
 L.control.zoom({ position: 'topright' }).addTo(map);
 
+// Store the current overlay so we can remove it later
+let currentOverlay = null;
+
+// Function to load a region map
+function loadRegion(regionKey) {
+  const region = regions[regionKey];
+  if (!region) {
+    console.error('Region not found:', regionKey);
+    return;
+
+
+    list_of_tasks = [
+        {"id": 1, "targetImageUrl": "/static/images/fontain_task_1.png", "correctLocation": [500, 500]},
+        {"id": 2, "targetImageUrl": "/static/images/task_fontaine_2.jpg", "correctLocation": [323, 457]},
+        {"id": 3, "targetImageUrl": "/static/images/task_fontaine_3.jpg", "correctLocation": [13, 100]},
+        {"id": 4, "targetImageUrl": "/static/images/task_fontaine_4.jpg", "correctLocation": [600, 550]},
+        {"id": 5, "targetImageUrl": "/static/images/task_fontaine_5.jpg", "correctLocation": [110, 500]},
+        {"id": 6, "targetImageUrl": "/static/images/task_fontaine_6.jpg", "correctLocation": [810, 213]}
+    ]
+    list_of_tasks = [
+        {"id": 1, "targetImageUrl": "/static/images/fontain_task_1.png", "correctLocation": [500, 500]},
+        {"id": 2, "targetImageUrl": "/static/images/task_fontaine_2.jpg", "correctLocation": [323, 457]},
+        {"id": 3, "targetImageUrl": "/static/images/task_fontaine_3.jpg", "correctLocation": [13, 100]},
+        {"id": 4, "targetImageUrl": "/static/images/task_fontaine_4.jpg", "correctLocation": [600, 550]},
+        {"id": 5, "targetImageUrl": "/static/images/task_fontaine_5.jpg", "correctLocation": [110, 500]},
+        {"id": 6, "targetImageUrl": "/static/images/task_fontaine_6.jpg", "correctLocation": [810, 213]}
+    ]
+  }
+  
+  // Remove existing overlay if any
+  if (currentOverlay) {
+    map.removeLayer(currentOverlay);
+  }
+  
+  // Add new overlay
+  currentOverlay = L.imageOverlay(region.imageUrl, region.bounds).addTo(map);
+  map.fitBounds(region.bounds);
+}
+
+// Initialize with default region
+loadRegion(gameState.currentRegion);
+
+// Add event listener for region selection changes
+const selectElement = document.getElementById('region-selector');
+selectElement.addEventListener('change', function() {
+  gameState.currentRegion = this.value;
+  loadRegion(gameState.currentRegion);
+  fetchTask();
+  startNewRound();
+});
+
+// Other DOM elements
 const targetImageElement = document.getElementById('target-image');
 const submitButton = document.getElementById('submit-btn');
 const timerElement = document.getElementById('timer');
-const resultElement = document.getElementById('result');
-const selectElement = document.getElementById('region-selector');
-
-selectElement.addEventListener('change',
-  function() {
-    const selectedValue = this.value;
-    let filename = `${selectedValue}.png`;
-
-    if (window.currentOverlay) {
-        map.removeLayer(window.currentOverlay);
-    }
-
-     L.imageOverlay(`/static/images/maps/${filename}`, imageBounds).addTo(map);
-  }
-);
-  
-    
+const resultElement = document.getElementById('result');    
 
 async function fetchTask() {
   try {
-    const response = await fetch('/get_task');
+    console.log(`fetching new task, currentTask is: ${gameState.currentTask}`)
+    const params = new URLSearchParams({
+	"region": gameState.currentRegion,
+    });
+    const response = await fetch(`/get_task?${params}`);
     const task = await response.json();
     gameState.currentTask = task;
     targetImageElement.src = task.targetImageUrl;
+    console.log(`Task fetched: ${ JSON.stringify(task) }`);
   } catch (error) {
     console.error('Error fetching task:', error);
   }
@@ -125,6 +197,8 @@ async function submitGuess() {
   const { id: taskId } = gameState.currentTask;
 
   try {
+
+    selectElement
     const response = await fetch('/submit_result', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
