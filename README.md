@@ -2,7 +2,7 @@
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=FFD43B&labelColor=3776AB&color=FFD43B) 
 ![Flask](https://img.shields.io/badge/Flask-2.2.5-ff9e00)
 
-# New: Updated themed UI
+# New: Dinamyc themed UI added
 ![1000016804](https://github.com/user-attachments/assets/2e268c45-a10e-42e2-8380-9908e2fd3792)
 
 
