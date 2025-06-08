@@ -84,12 +84,12 @@ function loadRegion(regionKey) {
         {"id": 6, "targetImageUrl": "/static/images/task_fontaine_6.jpg", "correctLocation": [810, 213]}
     ]
   }
-  
+
   // Remove existing overlay if any
   if (currentOverlay) {
     map.removeLayer(currentOverlay);
   }
-  
+
   // Add new overlay
   currentOverlay = L.imageOverlay(region.imageUrl, region.bounds).addTo(map);
   map.fitBounds(region.bounds);
@@ -105,13 +105,14 @@ selectElement.addEventListener('change', function() {
   loadRegion(gameState.currentRegion);
   fetchTask();
   startNewRound();
+  document.title = `Genshin GeoGuessr ${selectElement.innerText}`;
 });
 
 // Other DOM elements
 const targetImageElement = document.getElementById('target-image');
 const submitButton = document.getElementById('submit-btn');
 const timerElement = document.getElementById('timer');
-const resultElement = document.getElementById('result');    
+const resultElement = document.getElementById('result');
 
 async function fetchTask() {
   try {
@@ -158,7 +159,7 @@ function clearMapLayers() {
 function startTimer() {
   gameState.timer = 0;
   clearInterval(gameState.timerInterval);
-  
+
   gameState.timerInterval = setInterval(() => {
     gameState.timer++;
     timerElement.textContent = `Time: ${gameState.timer}s`;
@@ -211,7 +212,7 @@ async function submitGuess() {
 
     const data = await response.json();
     showResult(gameState.currentGuess, data.correctLocation, gameState.timer);
-    
+
     await delay(2000);
     await fetchTask();
     startNewRound();
@@ -278,7 +279,7 @@ map.on('click', e => {
     coords: [e.latlng.lat, e.latlng.lng],
     marker: marker
   };
-  
+
   submitButton.disabled = false;
 });
 
