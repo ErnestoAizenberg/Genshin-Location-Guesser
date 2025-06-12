@@ -1,1 +1,4 @@
-flask
+uvicorn
+fastapi
+pydantic
+jinja2

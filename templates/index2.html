@@ -7,7 +7,7 @@
     <meta name="keywords" content="Genshin Impact, Map, Guesser, Guess Image">
     <meta name="description" content="Guess a location from Genshin Impact by it's image">
     <meta name="author" content="Ernesto Seredinskiy">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://genshin-guesser.pythonanywhere.com/">
@@ -465,12 +465,12 @@
             #timer {
                 font-size: 1.2em;
             }
-            
+
             #submit-btn {
                 padding: 10px 20px;
                 font-size: 0.9em;
             }
-            
+
             #region-selector {
                 padding: 8px 12px;
                 font-size: 0.9em;
@@ -532,12 +532,12 @@
         document.getElementById('region-selector').addEventListener('change', function() {
             const region = this.value;
             document.body.className = region;
-            
+
             // Hide all effects first
             document.querySelectorAll('[id$="-effect"]').forEach(el => {
                 el.style.display = 'none';
             });
-            
+
             // Show the current region's effect
             document.getElementById(`${region}-effect`).style.display = 'block';
         });
@@ -551,14 +551,15 @@
         // const gameScript = document.createElement('script');
         // gameScript.src = 'static/js/game_script.js';
         // document.body.appendChild(gameScript);
-        
+
         // Theme script would go here
         // const themeScript = document.createElement('script');
         // themeScript.src = 'static/js/theme.js';
         // document.body.appendChild(themeScript);
     </script>
-    
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>                   <script src="static/js/game_script.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/js/game_script.js"></script>
     <!-- <script src="static/js/theme.js"></script> -->
 </body>
 </html>
