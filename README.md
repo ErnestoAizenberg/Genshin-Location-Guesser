@@ -8,9 +8,9 @@
 
 
 # Genshin-Location-Guesser
-A web-based game where players guess locations from the world of *Genshin Impact* using an interactive map. Built with:  
+A very simple web-based game where players guess locations from the world of *Genshin Impact* using an interactive map. Built with:  
 - **Frontend:** HTML, CSS, JavaScript (for interactive map and gameplay)  
-- **Backend:** Python (Flask framework for handling game logic and API requests)
+- **Backend:** Python (FastAPI framework for handling game logic and API requests)
 
 ## Quick Start
 
